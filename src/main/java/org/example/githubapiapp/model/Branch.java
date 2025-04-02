@@ -2,7 +2,13 @@ package org.example.githubapiapp.model;
 
 public class Branch {
     private String branchName;
-    private String commitHash;
+    private String sha;
+
+    public Branch(String name, String sha) {
+        this.branchName = name;
+        this.sha = sha;
+    }
+
 
     public String getBranchName() {
         return branchName;
@@ -12,11 +18,11 @@ public class Branch {
         this.branchName = branchName;
     }
 
-    public String getCommitHash() {
-        return commitHash;
+    public String getSha() {
+        return sha;
     }
 
-    public void setCommitHash(String commitHash) {
-        this.commitHash = commitHash;
+    public void setSha(String sha) {
+        this.sha = sha;
     }
 }

@@ -1,17 +1,17 @@
 package org.example.githubapiapp.model;
 
-public class GithubRespone {
-    private String repoName;
+public class GithubResponse {
+    private String name;
     private Owner owner;
     private String branchesURL;
     private boolean fork;
 
-    public String getRepoName() {
-        return repoName;
+    public String getName() {
+        return name;
     }
 
-    public void setRepoName(String repoName) {
-        this.repoName = repoName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Owner getOwner() {
