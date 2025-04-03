@@ -3,7 +3,7 @@ package org.example.githubapiapp.model;
 public class GithubResponse {
     private String name;
     private Owner owner;
-    private String branchesURL;
+    private String branches_url;
     private boolean fork;
 
     public String getName() {
@@ -22,12 +22,12 @@ public class GithubResponse {
         this.owner = owner;
     }
 
-    public String getBranchesURL() {
-        return branchesURL;
+    public String getBranches_url() {
+        return branches_url;
     }
 
-    public void setBranchesURL(String branchesURL) {
-        this.branchesURL = branchesURL;
+    public void setBranches_url(String branches_url) {
+        this.branches_url = branches_url;
     }
 
     public boolean isFork() {
