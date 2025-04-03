@@ -11,7 +11,6 @@ import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class RepoService {
@@ -53,7 +52,7 @@ public class RepoService {
         List<Repo> finalRepos = new ArrayList<>();
 
         for (GithubResponse repo : filterForks(getGithubRepos(user))) {
-            List<Branch> branches = getBranches(repo.getBranchesURL());
+            List<Branch> branches = getBranches(repo.getBranches_url());
 
             Repo finalRepo = new Repo();
             finalRepo.setRepoName(repo.getName());
