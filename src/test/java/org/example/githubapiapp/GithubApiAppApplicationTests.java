@@ -1,9 +1,7 @@
 package org.example.githubapiapp;
 
-import org.example.githubapiapp.handler.ResponseHandler;
 import org.example.githubapiapp.model.Branch;
 import org.example.githubapiapp.model.Repo;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,15 +9,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.web.servlet.ResultActions;
 
-import java.util.List;
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.util.AssertionErrors.assertEquals;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class GithubApiAppApplicationTests {
@@ -38,29 +34,28 @@ class GithubApiAppApplicationTests {
 
     @Test
     void contextLoads() {
+        assertTrue(true);
     }
-    @Test
-    void userExists() {
-        ResponseEntity<String> githubResult = restTemplate.getForEntity("https://api.github.com/users/TheH3rmit", String.class);
-        ResponseEntity<String> myResult = restTemplate.getForEntity(baseUrl+"/TheH3rmit", String.class);
 
-        assertEquals (githubResult.getStatusCode(), myResult.getStatusCode());
+    @Test
+    void shouldReturn404WhenUserDoesNotExist() {
+        String url = baseUrl + "/this_user_does_not_exist_abc123/reposnotforks";
+
+        ResponseEntity<Map> response = restTemplate.getForEntity(url, Map.class);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+
+        Map<String, Object> body = response.getBody();
+        assertNotNull(body);
+        assertEquals(404, body.get("status"));
+        assertEquals("User does not exist", body.get("message"));
     }
-    @Test
-    void userNotExists() {
-        ResponseEntity<String> githubResult = restTemplate.getForEntity("https://api.github.com/users/!", String.class);
-        ResponseEntity<String> myResult = restTemplate.getForEntity(baseUrl+"/!", String.class);
 
-        assertEquals (githubResult.getStatusCode(), myResult.getStatusCode());
-
-    }
     @Test
-    void userFoundReposNotForks() {
-        String username = "TheH3rmit";
-        String url = baseUrl + "/" + username+"/reposnotforks";
+    void shouldReturnReposForExistingUser() {
+        String url = baseUrl + "/TheH3rmit/reposnotforks";
 
         ResponseEntity<Repo[]> response = restTemplate.getForEntity(url, Repo[].class);
-
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
@@ -68,28 +63,16 @@ class GithubApiAppApplicationTests {
         assertNotNull(repos);
         assertTrue(repos.length > 0);
 
+        for (Repo repo : repos) {
+            assertNotNull(repo.getRepoName());
+            assertNotNull(repo.getOwnerLogin());
+            assertNotNull(repo.getBranches());
 
-        Repo repo = repos[0];
-        assertNotNull(repo.getRepoName());
-        assertNotNull(repo.getOwnerLogin());
-        assertNotNull(repo.getBranches());
-
-        if (!repo.getBranches().isEmpty()) {
-            Branch branch = repo.getBranches().get(0);
-            assertNotNull(branch.getBranchName());
-            assertNotNull(branch.getSha());
+            for (Branch branch : repo.getBranches()) {
+                assertNotNull(branch.getBranchName());
+                assertNotNull(branch.getSha());
+            }
         }
-    }
-    @Test
-    void userNotFoundReposNotForks() {
-        String username = "!";
-        String url = baseUrl + "/" + username +"/reposnotforks";
-        ResponseEntity<String> myResult = restTemplate.getForEntity(baseUrl+"/TheH3rmit", String.class);
-        ResponseEntity<String> response = restTemplate.getForEntity(url,String.class);
-
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertEquals(response.getBody(), ResponseHandler.generateResponse(HttpStatus.NOT_FOUND,"User does not exist").toString() );
-
     }
 
 }

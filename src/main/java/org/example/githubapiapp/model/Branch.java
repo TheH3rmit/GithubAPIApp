@@ -8,6 +8,7 @@ public class Branch {
         this.branchName = name;
         this.sha = sha;
     }
+    public Branch() {}
 
 
     public String getBranchName() {
